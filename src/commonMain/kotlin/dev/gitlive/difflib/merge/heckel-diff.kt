@@ -79,7 +79,7 @@ class HeckelDiff(val left: List<String>, val right: List<String>) {
   fun mismatchOffset(lArr: List<String>, rArr: List<String>): Int {
     val max = max(lArr.size, rArr.size);
     for (i in 0 until max) {
-      if (lArr[i] !== rArr[i]) {
+      if (i >= lArr.size || i >= rArr.size || lArr[i] != rArr[i]) {
         return i;
       }
     }
@@ -90,14 +90,13 @@ class HeckelDiff(val left: List<String>, val right: List<String>) {
   fun identifyUniquePositions() : List<UniquePositions> {
     val leftUniques = this.findUnique(this.left);
     val rightUniques = this.findUnique(this.right);
-    val leftKeys =  leftUniques.keys
-    val rightKeys =  rightUniques.keys
+    val leftKeys =  leftUniques.keys.toSet()
+    val rightKeys =  rightUniques.keys.toSet()
     val sharedKeys =  leftKeys.filter { k -> rightKeys.contains(k) }.toSet()
 
-    val uniqRanges = sharedKeys.map { k ->
+    val uniqRanges = sharedKeys.mapIndexed { index, k ->
       UniquePositions(leftUniques.getValue(k), rightUniques.getValue(k))
     }
-
     return listOf(UniquePositions(this.left.size, this.right.size)) + uniqRanges
   }
 

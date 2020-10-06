@@ -11,50 +11,40 @@ class Merger(left: List<String>, base: List<String>, right: List<String>) {
     }
   }
 
-  val result = mutableListOf<Outcome>();
-  val text3 = Text3(left, base, right);
+  val result = mutableListOf<Outcome>()
+  val text3 = Text3(left, base, right)
   
   fun executeThreeWayMerge() {
-    val differences = Diff3.executeDiff(this.text3.left,
-                                          this.text3.base,
-                                          this.text3.right);
-    var index = 1;
+    val differences = Diff3.executeDiff(this.text3.left, this.text3.base, this.text3.right)
+    var index = 1
 
     differences.forEach { difference ->
       val initialText = mutableListOf<String>()
 
       for(lineno in index until difference.baseLo) {
-        initialText.add(this.text3.base[lineno - 1]);
+        initialText.add(this.text3.base[lineno - 1])
       }
 
       if (initialText.isNotEmpty()) {
-        this.result.add( Resolved(initialText));
+        this.result.add( Resolved(initialText))
       }
 
-      this.interpretChunk(difference);
-      index = difference.baseHi + 1;
+      this.interpretChunk(difference)
+      index = difference.baseHi + 1
     }
 
 
-    val endingText = this.accumulateLines(index,
-                                            this.text3.base.size,
-                                            this.text3.base);
+    val endingText = this.accumulateLines(index, this.text3.base.size, this.text3.base)
     if (endingText.isNotEmpty()) {
-      this.result.add( Resolved(endingText));
+      this.result.add(Resolved(endingText))
     }
   }
 
   fun setConflict(difference: Difference) {
     val conflict = Conflicted.create(ConflictedOpts(
-      left = this.accumulateLines(difference.leftLo,
-                                 difference.leftHi,
-                                 this.text3.left),
-      base = this.accumulateLines(difference.baseLo,
-                                 difference.baseHi,
-                                 this.text3.base),
-      right = this.accumulateLines(difference.rightLo,
-                                  difference.rightHi,
-                                  this.text3.right)
+      left = this.accumulateLines(difference.leftLo, difference.leftHi, this.text3.left),
+      base = this.accumulateLines(difference.baseLo, difference.baseHi, this.text3.base),
+      right = this.accumulateLines(difference.rightLo, difference.rightHi, this.text3.right)
     ));
     this.result.add(conflict);
   }
@@ -112,8 +102,7 @@ class Merger(left: List<String>, base: List<String>, right: List<String>) {
                               difference.leftLo,
                               difference.leftHi);
     val d = HeckelDiff.diff(right, left);
-    if ((this._assocRange(d, Action.change) != null || this._assocRange(d, Action.remove) != null) &&
-        difference.baseLo <= difference.baseHi) {
+    if ((this._assocRange(d, Action.change) != null || this._assocRange(d, Action.remove) != null) && difference.baseLo <= difference.baseHi) {
       this.setConflict(difference);
     } else {
       this.determineConflict(d, left, right);
