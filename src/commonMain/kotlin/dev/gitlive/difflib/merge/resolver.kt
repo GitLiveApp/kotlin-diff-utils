@@ -6,20 +6,20 @@ fun resolver(
         rightLabel: String,
         joinFunction: JoinFunction
 ): (List<Outcome>) -> String = { results ->
-    results.map { result ->
+    val res = results.map { result ->
       if (result.isResolved()) {
         val joined = result.apply(joinFunction) as Resolved
-        return@map joined.result
+        joined.result.joinToString("\n")
       } else {
           val joined = result.apply(joinFunction) as Conflicted
-
-        return@map listOf(leftLabel,
-            joined.left,
-            baseLabel,
-            joined.right,
-            rightLabel
-        ).joinToString("\n");
+        listOf("$leftLabel\n",
+            joined.left.joinToString("\n"),
+            "$baseLabel\n",
+            joined.right.joinToString("\n"),
+            "$rightLabel\n"
+        ).joinToString("")
       }
-    }.joinToString("\n");
+    }
+    res.joinToString("")
 }
 

@@ -1,16 +1,15 @@
 package dev.gitlive.difflib.merge
 
-val defaultJoinFunction: (a: List<String>) -> String = { a -> a.joinToString() }
+val defaultJoinFunction: (a: List<String>) -> String = { a -> a.joinToString("") }
 val defaultSplitFunction: (s: String) -> List<String> = { s -> s.split(Regex("(?<=\n)")) }
-val defaultConflictFunction = resolver("<<<<<<< YOUR CHANGES",
+fun defaultConflictFunction(joinFunction: JoinFunction) = resolver("<<<<<<< LEFT",
                                          "=======",
-                                         ">>>>>>> APP AUTHORS CHANGES",
-                                         defaultJoinFunction);
+                                         ">>>>>>> RIGHT", joinFunction)
 
 data class DiffOptions(
   val splitFunction: (s: String) -> List<String> =  defaultSplitFunction,
   val joinFunction: JoinFunction = defaultJoinFunction,
-  val conflictFunction: ConflictFunction = defaultConflictFunction
+  val conflictFunction: ConflictFunction = defaultConflictFunction(joinFunction)
 )
 
 fun merge(
