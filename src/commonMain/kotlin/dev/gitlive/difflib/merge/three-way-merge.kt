@@ -9,7 +9,7 @@ fun defaultConflictFunction(joinFunction: JoinFunction) = resolver("<<<<<<< LEFT
 data class DiffOptions(
   val splitFunction: (s: String) -> List<String> =  defaultSplitFunction,
   val joinFunction: JoinFunction = defaultJoinFunction,
-  val conflictFunction: ConflictFunction = defaultConflictFunction(joinFunction)
+  val conflictFunction: ConflictFunction? = defaultConflictFunction(joinFunction)
 )
 
 fun merge(

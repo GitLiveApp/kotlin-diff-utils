@@ -5,7 +5,7 @@ typealias ConflictFunction = (a: List<Outcome>) -> Any
 
 object Collater {
 
-  fun collateMerge(mergeResult: List<Outcome>, joinFunction: JoinFunction, conflictHandler: ConflictFunction): MergeResult {
+  fun collateMerge(mergeResult: List<Outcome>, joinFunction: JoinFunction, conflictHandler: ConflictFunction?): MergeResult {
     if (mergeResult.isEmpty()) {
       return MergeResult(listOf(Resolved(emptyList())), joinFunction);
     } else {
