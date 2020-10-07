@@ -1,4 +1,4 @@
-import dev.gitlive.difflib.merge.*
+package dev.gitlive.difflib.merge
 
 class Merger(left: List<String>, base: List<String>, right: List<String>) {
 
