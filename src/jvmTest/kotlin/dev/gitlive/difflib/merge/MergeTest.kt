@@ -127,4 +127,78 @@ class MergeTest {
                 ">>>>>>> RIGHT\n" +
                 "}", merged.joinedResults())
     }
+
+    @Test
+    fun coreMergeIndexBoundsFailTest() {
+        val left = "package dev.bluefalcon\n" +
+                "\n" +
+                "import android.bluetooth.BluetoothDevice\n" +
+                "\n" +
+                "val andrew = \"hi\"\n" +
+                "\n" +
+                "actual class BluetoothPeripheral(val bluetoothDevice: BluetoothDevice) {\n" +
+                "    val teamhubUser = \"test\"\n" +
+                "    actual val name: String?\n" +
+                "        get() = bluetoothDevice.name ?: bluetoothDevice.address\n" +
+                "    actual val services: List<BluetoothService>\n" +
+                "        get() = deviceServices\n" +
+                "    actual val uuid: String\n" +
+                "        get() = bluetoothDevice.address\n" +
+                "fds\n" +
+                "    actual var rssi: Float? = null\n" +
+                "\n" +
+                "    var deviceServices: List<BluetoothService> = listOf()\n" +
+                "    \n" +
+                "    fun anotherFunc() {\n" +
+                "        println(\"woo\")\n" +
+                "    }\n" +
+                "}"
+        val base = "package dev.bluefalcon\n" +
+                "\n" +
+                "import android.bluetooth.BluetoothDevice\n" +
+                "\n" +
+                "actual class BluetoothPeripheral(val bluetoothDevice: BluetoothDevice) {\n" +
+                "    val teamhubUser = \"test\"\n" +
+                "    actual val name: String?\n" +
+                "        get() = bluetoothDevice.name ?: bluetoothDevice.address\n" +
+                "    actual val services: List<BluetoothService>\n" +
+                "        get() = deviceServices\n" +
+                "    actual val uuid: String\n" +
+                "        get() = bluetoothDevice.address\n" +
+                "fds\n" +
+                "    actual var rssi: Float? = null\n" +
+                "\n" +
+                "    var deviceServices: List<BluetoothService> = listOf()\n" +
+                "    \n" +
+                "    fun anotherFunc() {\n" +
+                "        println(\"woo\")\n" +
+                "    }\n" +
+                "}"
+        val right = "package dev.bluefalcon\n" +
+                "\n" +
+                "import android.bluetooth.BluetoothDevice\n" +
+                "\n" +
+                "val andrew = \"hi\"\n" +
+                "\n" +
+                "actual class BluetoothPeripheral(val bluetoothDevice: BluetoothDevice) {\n" +
+                "    val teamhubUser = \"test\"\n" +
+                "    actual val name: String?\n" +
+                "        get() = bluetoothDevice.name ?: bluetoothDevice.address\n" +
+                "    actual val services: List<BluetoothService>\n" +
+                "        get() = deviceServices\n" +
+                "    actual val uuid: String\n" +
+                "        get() = bluetoothDevice.address\n" +
+                "fds\n" +
+                "    actual var rssi: Float? = null\n" +
+                "\n" +
+                "    var deviceServices: List<BluetoothService> = listOf()\n" +
+                "    \n" +
+                "    fun anotherFunc() {\n" +
+                "        println(\"woo\")\n" +
+                "    }\n" +
+                "}"
+        val merged = merge(left, base, right)
+        assertFalse(merged.conflict)
+        assertEquals("package dev.bluefalcon\n\nimport android.bluetooth.BluetoothDevice\n\nval andrew = \"hi\"\n\nactual class BluetoothPeripheral(val bluetoothDevice: BluetoothDevice) {\n    val teamhubUser = \"test\"\n    actual val name: String?\n        get() = bluetoothDevice.name ?: bluetoothDevice.address\n    actual val services: List<BluetoothService>\n        get() = deviceServices\n    actual val uuid: String\n        get() = bluetoothDevice.address\nfds\n    actual var rssi: Float? = null\n\n    var deviceServices: List<BluetoothService> = listOf()\n    \n    fun anotherFunc() {\n        println(\"woo\")\n    }\n}", (merged.joinedResults() as List<*>).first())
+    }
 }

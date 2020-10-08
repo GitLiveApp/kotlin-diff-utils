@@ -117,7 +117,7 @@ class Diff3(val left: List<String>,
       return ChangeType.chooseLeft;
     } else {
       // leftSubset deepEquals rightSubset
-      if (!leftSubset.withIndex().all { (i, x) -> rightSubset[i] === x }) {
+      if (!leftSubset.withIndex().all { (i, x) -> rightSubset[i] == x }) {
         return ChangeType.possibleConflict;
       } else {
         return ChangeType.noConflictFound;

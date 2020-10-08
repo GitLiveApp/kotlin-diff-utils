@@ -69,20 +69,16 @@ class Merger(left: List<String>, base: List<String>, right: List<String>) {
     }
   }
 
-  fun determineOutcome(changeRange: ChangeRange, left: List<String>, right: List<String>) : Outcome? {
-    if (changeRange.action === Action.change) {
-      return Conflicted.create(ConflictedOpts(
-        left = this.accumulateLines(changeRange.rightLo, changeRange.rightHi, left),
-        right = this.accumulateLines(changeRange.leftLo, changeRange.leftHi, right),
-        base = emptyList()
-      ));
-    } else if (changeRange.action === Action.add) {
-      return  Resolved(this.accumulateLines(changeRange.rightLo,
-                                               changeRange.rightHi,
-                                               left));
-    } else {
-      return null;
+  fun determineOutcome(changeRange: ChangeRange, left: List<String>, right: List<String>) = when (changeRange.action) {
+    Action.change -> {
+      Conflicted.create(ConflictedOpts(
+              left = this.accumulateLines(changeRange.rightLo, changeRange.rightHi, left),
+              right = this.accumulateLines(changeRange.leftLo, changeRange.leftHi, right),
+              base = emptyList()
+      ))
     }
+    Action.add -> { Resolved(this.accumulateLines(changeRange.rightLo, changeRange.rightHi, left)) }
+    else -> null
   }
 
   fun setText(origText: List<String>, lo: Int, hi: Int): MutableList<String> {
@@ -117,7 +113,7 @@ class Merger(left: List<String>, base: List<String>, right: List<String>) {
       if (tempText.isNotEmpty()) {
         this.result.add( Resolved(tempText));
       }
-    } else if (difference.changeType !== ChangeType.possibleConflict) {
+    } else if (difference.changeType != ChangeType.possibleConflict) {
       val tempText = this.accumulateLines(difference.rightLo,
                                             difference.rightHi,
                                             this.text3.right);
