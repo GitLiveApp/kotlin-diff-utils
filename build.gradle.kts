@@ -1,34 +1,33 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
-group = "dev.gitlive"
-version = "5.0.0"
-
 plugins {
     `maven-publish`
     signing
-    kotlin("native.cocoapods") version "1.4.10"
-    kotlin("multiplatform") version "1.4.10"
+    kotlin("multiplatform") version "1.4.30-M1"
 }
+
+group = "dev.gitlive"
+version = "5.0.0"
 
 repositories {
     mavenLocal()
     google()
     jcenter()
-    maven(url = "https://dl.bintray.com/kotlin/kotlin-dev")
 }
 
 kotlin {
     jvm {
-        val main by compilations.getting {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+        testRuns["test"].executionTask.configure {
+            useJUnit()
         }
     }
 
-    js {
-        val main by compilations.getting {
+    js(LEGACY) {
+        nodejs()
+        compilations.all {
             kotlinOptions {
                 sourceMap = true
                 sourceMapEmbedSources = "always"
@@ -36,9 +35,6 @@ kotlin {
             }
         }
     }
-
-    iosArm64()
-    iosX64()
 
     sourceSets {
         val commonMain by getting {
