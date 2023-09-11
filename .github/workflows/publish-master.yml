@@ -2,7 +2,7 @@ name: Publish Master
 
 on:
   push:
-    branches: [ master ]
+    branches: [ release/* ]
 
 jobs:
   build:
